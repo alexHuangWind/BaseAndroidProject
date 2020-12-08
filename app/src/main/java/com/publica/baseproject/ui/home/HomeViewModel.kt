@@ -8,9 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.publica.baseproject.data.repository.PostsRepository
 import com.publica.baseproject.model.Post
 import com.publica.baseproject.model.State
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-
+@ExperimentalCoroutinesApi
 class HomeViewModel @ViewModelInject constructor(private val postsRepository: PostsRepository) :
     ViewModel() {
 

@@ -17,7 +17,7 @@ import javax.inject.Singleton
 class BaseApiModule {
     @Singleton
     @Provides
-    fun provideRetrofitService(): BaseApiModule = Retrofit.Builder()
+    fun provideRetrofitService(): BaseApiService = Retrofit.Builder()
         .baseUrl(BaseApiService.BASE_API_URL)
         .addConverterFactory(
             MoshiConverterFactory.create(
@@ -25,6 +25,6 @@ class BaseApiModule {
             )
         )
         .build()
-        .create(BaseApiModule::class.java)
+        .create(BaseApiService::class.java)
 
 }

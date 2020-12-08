@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.publica.baseproject.adapter.PostListAdapter
 import com.publica.baseproject.databinding.FragmentHomeBinding
@@ -19,18 +20,16 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class HomeFragment: BaseFragment<HomeViewModel,FragmentHomeBinding>() {
     private val mAdapter = PostListAdapter(this::onItemClicked)
+    override val mViewModel: HomeViewModel by viewModels()
 
-     override lateinit var mViewModel: HomeViewModel
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View {
 
-        mViewModel =
-                ViewModelProvider(this).get(HomeViewModel::class.java)
         val root = mViewBinding.root
-
+        mViewBinding.postsRecyclerView.adapter = mAdapter
         mViewModel.postsLiveData.observe(viewLifecycleOwner){
             state->
             when(state){
@@ -46,6 +45,7 @@ class HomeFragment: BaseFragment<HomeViewModel,FragmentHomeBinding>() {
                 }
             }
         }
+        initPosts()
         return root
     }
 
@@ -63,5 +63,33 @@ class HomeFragment: BaseFragment<HomeViewModel,FragmentHomeBinding>() {
         Toast.makeText(context, "PostDetailsActivity", Toast.LENGTH_LONG).show()
 //        val intent = PostDetailsActivity.getStartIntent(this, postId)
 //        startActivity(intent, options.toBundle())
+    }
+    private fun initPosts() {
+        mViewModel.postsLiveData.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is State.Loading -> showLoading(true)
+                is State.Success -> {
+                    if (state.data.isNotEmpty()) {
+                        mAdapter.submitList(state.data.toMutableList())
+                        showLoading(false)
+                    }
+                }
+                is State.Error -> {
+                    showLoading(false)
+                }
+            }
+        }
+
+        mViewBinding.swipeRefreshLayout.setOnRefreshListener {
+            getPosts()
+        }
+
+        // If State isn't `Success` then reload posts.
+        if (mViewModel.postsLiveData.value !is State.Success) {
+            getPosts()
+        }
+    }
+    private fun getPosts() {
+        mViewModel.getPosts()
     }
 }

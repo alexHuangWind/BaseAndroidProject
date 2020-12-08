@@ -15,17 +15,17 @@ import javax.inject.Singleton
 @Singleton
 class PostsRepository @Inject constructor(
     private val postsDao: PostsDao,
-    private val baseApiService: BaseApiService,
+    private  var baseApiService: BaseApiService
     ) {
     /**
      * Fetched the posts from network and stored it in database. At the end, data from persistence
      * storage is fetched and emitted.
      */
+
     fun getAllPosts(): Flow<State<List<Post>>> {
         return object : NetworkBoundRepository<List<Post>, List<Post>>() {
 
-            override suspend fun saveRemoteData(response: List<Post>) =
-                postsDao.insertPosts(response)
+            override suspend fun saveRemoteData(response: List<Post>) = postsDao.insertPosts(response)
 
             override fun fetchFromLocal(): Flow<List<Post>> = postsDao.getAllPosts()
 

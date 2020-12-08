@@ -1,10 +1,16 @@
 package com.publica.baseproject.data.local
 
 import android.content.Context
+import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.publica.baseproject.data.local.dao.PostsDao
+import com.publica.baseproject.model.Post
 
+@Database(
+        entities = [Post::class],
+        version = DatabaseMigrations.DB_VERSION
+)
 abstract class BasePostsDatabase : RoomDatabase() {
 
     abstract fun getPostsDao(): PostsDao

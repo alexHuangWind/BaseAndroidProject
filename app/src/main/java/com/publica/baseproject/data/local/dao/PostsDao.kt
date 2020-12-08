@@ -1,11 +1,12 @@
 package com.publica.baseproject.data.local.dao
 
+import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.publica.baseproject.model.Post
 import kotlinx.coroutines.flow.Flow
-
+@Dao
 interface PostsDao {
     /**
      * Inserts [posts] into the [Post.TABLE_NAME] table.
